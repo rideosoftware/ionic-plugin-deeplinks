@@ -43,7 +43,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public class IonicDeeplink extends CordovaPlugin {
-  private static final String TAG = "IonicDeeplinkPlugin";
+  private static final String TAG = "IonicDeeplinkPlugin-Console";
 
   private JSONObject lastEvent;
 
@@ -170,20 +170,24 @@ public class IonicDeeplink extends CordovaPlugin {
       if (o instanceof Collection) {
         return new JSONArray((Collection) o);
       } else if (o.getClass().isArray()) {
-        return new JSONArray(o);
+        // return new JSONArray(o);
+        // Fix for API < 19
+        String json = "{\"data\":" + o.toString() + "}";
+        JSONObject jsonObj = new JSONObject(json);
+        return new JSONArray(jsonObj.getJSONArray("data"));
       }
       if (o instanceof Map) {
         return new JSONObject((Map) o);
       }
       if (o instanceof Boolean ||
-          o instanceof Byte ||
-          o instanceof Character ||
-          o instanceof Double ||
-          o instanceof Float ||
-          o instanceof Integer ||
-          o instanceof Long ||
-          o instanceof Short ||
-          o instanceof String) {
+              o instanceof Byte ||
+              o instanceof Character ||
+              o instanceof Double ||
+              o instanceof Float ||
+              o instanceof Integer ||
+              o instanceof Long ||
+              o instanceof Short ||
+              o instanceof String) {
         return o;
       }
       if (o.getClass().getPackage().getName().startsWith("java.")) {
